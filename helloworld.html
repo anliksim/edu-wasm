@@ -1,0 +1,30 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Hello World with WebAssembly">
+    <meta name="author" content="Simon Anliker">
+    <title>Hello World</title>
+</head>
+<body>
+<script>
+    // C instructions for hello() and helloLog()
+    const buffer = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 133, 128, 128, 128, 0, 1, 96, 0, 1, 127, 3, 131, 128, 128, 128, 0, 2, 0, 0, 4, 132, 128, 128, 128, 0, 1, 112, 0, 0, 5, 131, 128, 128, 128, 0, 1, 0, 1, 6, 129, 128, 128, 128, 0, 0, 7, 157, 128, 128, 128, 0, 3, 6, 109, 101, 109, 111, 114, 121, 2, 0, 5, 104, 101, 108, 108, 111, 0, 0, 8, 104, 101, 108, 108, 111, 76, 111, 103, 0, 1, 10, 147, 128, 128, 128, 0, 2, 132, 128, 128, 128, 0, 0, 65, 16, 11, 132, 128, 128, 128, 0, 0, 65, 48, 11, 11, 211, 128, 128, 128, 0, 2, 0, 65, 16, 11, 24, 72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 44, 32, 73, 39, 109, 32, 83, 105, 109, 111, 110, 33, 0, 0, 65, 48, 11, 48, 72, 101, 108, 108, 111, 32, 116, 111, 32, 116, 104, 111, 115, 101, 32, 119, 104, 111, 32, 98, 111, 116, 104, 101, 114, 32, 99, 104, 101, 99, 107, 105, 110, 103, 32, 116, 104, 101, 32, 99, 111, 110, 115, 111, 108, 101, 33, 0]);
+    const m = new WebAssembly.Instance(new WebAssembly.Module(buffer));
+    const h = new Uint8Array(m.exports.memory.buffer);
+
+    // log helloLog() msg to console
+    console.log(asString(h, m.exports.helloLog()));
+
+    // append hello() msg to body
+    document.body.innerHTML += '<p>' + asString(h, m.exports.hello()) + '</p>';
+
+    function asString(h, p) {
+        let string = "";
+        for (let i = p; h[i]; i++) {
+            string += String.fromCharCode(h[i]);
+        }
+        return string;
+    }
+</script>
+</body>
+</html>

@@ -1,2 +1,3 @@
-# edu-wasm
-WebAssembly
+# WebAssembly
+
+Education series
